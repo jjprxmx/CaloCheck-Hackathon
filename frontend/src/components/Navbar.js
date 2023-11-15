@@ -1,16 +1,59 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Cookie } from "@mui/icons-material";
-const profilepath =
-  "https://pub-static.fotor.com/assets/projects/pages/28dfdd1b67984fd095e368b7c603b7e4/600w/fotor-8883abdca0284d13a2542f8810bf8156.jpg";
-
-
-
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserData } from "../Convert/userController";
+import { setType, setLineID, setDisplayName, setPictureUrl, setGender, setWeight, setHeight, setCal, setBmi, setAge } from "../store/userSlice";
 function Navbar() {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const fetchUserDataAndDispatch = async () => {
+    console.log("UserDataFetch");
+    try {
+      await fetchUserData(dispatch);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  //lugie modify
+  const defaultUserImage =
+    "https://i.pinimg.com/474x/89/d1/ee/89d1eedd44904286c8113a1f8603aa4c.jpg";
+  const [userImage, setUserImage] = useState(defaultUserImage);
+  useEffect(() => {
+    fetchUserDataAndDispatch();
+    setUserImage(user.pictureUrl || defaultUserImage);
+  }, [user]);
+
+  const cleartoken = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BASE_URL}/api/`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json();
+      //pim modified
+      dispatch(setType(""));
+      dispatch(setLineID(""));
+      dispatch(setDisplayName(""));
+      dispatch(setPictureUrl(""));
+      dispatch(setGender(""));
+      dispatch(setWeight(0));
+      dispatch(setHeight(0));
+      dispatch(setBmi(0));
+      dispatch(setAge(0));
+      //lugie modify
+      setUserImage(defaultUserImage);
+    } catch (error) {
+      console.log("Err");
+    }
+  };
+
   return (
     <>
-      <div className="navbar bg-base-100">
-        <div className="navbar-start">
+      <div className="navbar bg-base-100 z-10">
+        <div className="navbar-start z-10">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
               <svg
@@ -33,16 +76,16 @@ function Navbar() {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-              <Link to="/">Homepage</Link>
+                <Link to="/">Homepage</Link>
               </li>
               <li>
-              <Link to="/datastatus">Calendar</Link>
+                <Link to="/datastatus">Calendar</Link>
               </li>
               <li>
-              <Link to="/ai-scan">AI Scan</Link>
+                <Link to="/ai-scan">AI Scan</Link>
               </li>
               <li>
-              <Link to="/ig-scan">IG-story Scan</Link>
+                <Link to="/ig-scan">IG-story Scan</Link>
               </li>
             </ul>
           </div>
@@ -51,12 +94,14 @@ function Navbar() {
           </Link>
         </div>
 
-        <div className="navbar-end">
-
+        <div className="navbar-end z-10">
+          {/* <div className="dropdown dropdown-end">
+            <ThemeChange />
+          </div> */}
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img src={profilepath} />
+                <img src={userImage} />
               </div>
             </label>
             <ul
@@ -64,10 +109,12 @@ function Navbar() {
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-              <Link to="/settings">Settings</Link>
+                <Link to="/settings">Settings</Link>
               </li>
               <li>
-              <Link to="/welcome" >Logout</Link>
+                <Link to="/welcome" onClick={() => cleartoken()}>
+                  Logout
+                </Link>
               </li>
             </ul>
           </div>

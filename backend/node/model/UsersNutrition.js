@@ -7,31 +7,15 @@ const UsersNutrition = sequelize.define("usersnutritions", {
     primaryKey: true,
     autoIncrement: true,
   },
-  goals: {
-    type: DataTypes.DOUBLE,
-    allowNull: false,
+  userlineid: {
+    type: DataTypes.STRING,
   },
-  achieve: {
-    type: DataTypes.DOUBLE,
-  },
-  goals_protein: {
+  ach_kcal: {
     type: DataTypes.DOUBLE,
   },
-  goals_fat: {
-    type: DataTypes.DOUBLE,
-  },
-  goals_salt: {
-    type: DataTypes.DOUBLE,
-  },
-  goals_sugar: {
-    type: DataTypes.DOUBLE,
-  },
-  goals_veg: {
-    type: DataTypes.DOUBLE,
-  },
-  goals_carb: {
-    type: DataTypes.DOUBLE,
-  },
+  ach_g: {
+      type: DataTypes.DOUBLE,
+    },
   ach_protein: {
     type: DataTypes.DOUBLE,
   },
@@ -49,12 +33,6 @@ const UsersNutrition = sequelize.define("usersnutritions", {
   },
   ach_carb: {
     type: DataTypes.DOUBLE,
-  },
-  ach_cal: {
-    type: DataTypes.INTEGER,
-  },
-  userlineid: {
-    type: DataTypes.STRING,
   },
 });
 

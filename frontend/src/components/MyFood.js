@@ -1,68 +1,98 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarcode, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Searchmenu from "./Search/search";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TodayFood from "./Food/TodayFood";
+import { setLoading } from "../store/setSearch";
+
 const MyFood = ({ className }) => {
   const searchmenu = useSelector((state) => state.search.tableData);
   const [tableData, setTableData] = useState([]);
+  //lugie add
+  const loading = useSelector((state) => state.search.loading);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setLoading(true));
+    console.log("loading innital:", loading);
+  }, []);
+
   useEffect(() => {
     setTableData(searchmenu);
   }, [searchmenu]);
 
-  const {status} = useSelector((state) => state.barcode);
+  const { status } = useSelector((state) => state.barcode);
 
   return (
     <>
-    { status ?
-    <>
-    <TodayFood/>
-    </>
-    :
-    <div className={className}>
-      <div className="Myfood--box">
-        <h1>
-          <b>MyFood</b>
-        </h1>
-      <Searchmenu/>
-      </div>
-      <div className="Myfood--list">
-        {tableData.map((item) => (
-          <Link className="m-4"
-            to={`/myfood/Pastfood/${item.name}/${item.kcal}/${item.per_items}/${item.per_protein}/${item.per_fat}/${item.per_salt}/${item.per_sugar}/${item.per_veg}/${item.per_carb}`}
-          >
-            <div
-              key={item.id}
-              tabIndex={0}
-              className="list collapse collapse-open border border-base-300 bg-base-200 margin-bottom-2"
-              style={{ minWidth: "16rem" }}
-            >
-              <div className="collapse-title text-xl font-medium">
-                {item.name}{" "}
-              </div>
-              <div className="collapse-content">
-                <p>
-                  {item.amount} - {item.kcal} Kcal
-                </p>
-              </div>
+      {status ? (
+        <>
+          <TodayFood />
+        </>
+      ) : (
+        <div className={className}>
+          <div className="Myfood--box">
+            <h3 className="card-titletwo text-base-100 font-bold">MY FOOD</h3>
+            <h2 className="card-title font-bold" style={{ lineHeight: "0.5" }}>
+              ค้นหารายการอาหาร
+            </h2>
+            <Searchmenu />
+          </div>
+
+          <div className="Myfood--list">
+            <div className="Mybox--list w-11/12">
+              {loading ? (
+                <div className="wrap w-full h-1/2 mt-32">
+                  <div className="flex flex-row justify-center items-center h-full">
+                    <span className="loading loading-ball loading-xs text-success"></span>
+                    <span className="loading loading-ball loading-sm text-primary"></span>
+                    <span className="loading loading-ball loading-md text-accent"></span>
+                    <span className="loading loading-ball loading-lg text-secondary"></span>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {tableData.slice(0, 20).map((item) => (
+                    <Link
+                      className="m-4"
+                      to={`/myfood/Pastfood/${item.idfood}/${item.name}/${item.kcal}/${item.per_items}/${item.per_protein}/${item.per_fat}/${item.per_salt}/${item.per_sugar}/${item.per_veg}/${item.per_carb}`}
+                    >
+                      <div
+                        key={item.idfood}
+                        tabIndex={0}
+                        className="list collapse collapse-open border border-base-300 bg-base-200 margin-bottom-2 max-w-md"
+                      >
+                        <div className="collapse-title text-xl font-medium">
+                          {item.name}
+                        </div>
+                        <div className="collapse-content">
+                          <p>
+                            {item.per_items} จาน - {item.kcal} Kcal
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </>
+              )}
             </div>
-          </Link>
-        ))}
-        <div className="button">
-          <div className="flex-grow"></div>
-          <Link to="/myfood/Addfood">
-            <button className="btn btn-primary font-bold w-12 h-12 p-2 flex justify-center items-center">
-              <FontAwesomeIcon icon={faPlus} className="font-bold text-3xl" />
-            </button>
-          </Link>
+            <div className="button">
+              <div className="flex-grow"></div>
+              <Link to="/myfood/Addfood">
+                <button className="btn btn-primary font-bold w-12 h-12 p-2 flex justify-center items-center">
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    className="font-bold text-3xl"
+                  />
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-}
-</>
+      )}
+    </>
   );
 };
 
@@ -75,6 +105,8 @@ export default styled(MyFood)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    z-index: 1;
   }
   .Myfood--box h1 {
     font-size: calc(60% + 2vmin);
@@ -92,7 +124,14 @@ export default styled(MyFood)`
     justify-content: center;
   }
   .Myfood--list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .Mybox--list {
     margin: 1rem;
+    margin-top: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -101,6 +140,7 @@ export default styled(MyFood)`
   .collapse {
     border: 1px solid #ef9fbc;
     background-color: transparent;
+    width: 24rem;
   }
   .button {
     position: fixed;
@@ -113,5 +153,14 @@ export default styled(MyFood)`
 
   .list {
     border-radius: 100px;
+  }
+
+  .collapse-title {
+    padding-left: 30px;
+    padding-bottom: 0;
+    min-height: 0;
+  }
+  .collapse-content {
+    padding-left: 30px;
   }
 `;

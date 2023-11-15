@@ -7,7 +7,7 @@ const Barcode = () => {
     const {scannerRef, cameraId, setCameraId, scanning, setScanning, setResults, cameraError, cameras} = BarcodeFunctions();
   return (
     <>
-        <button className="btn btn-accent ml-2" onClick={()=>document.getElementById('my_modal_2').showModal()}>
+        <button className="btn btn-primary bg-primary-focus ml-2" onClick={()=>document.getElementById('my_modal_2').showModal()}>
               <FontAwesomeIcon icon={faBarcode} className="input-icon" />
         </button>
         <dialog id="my_modal_2" className="modal">
@@ -25,7 +25,7 @@ const Barcode = () => {
                             </select>
                         </form>
                     }
-                    <button className='btn' onClick={() => setScanning(!scanning) }>{scanning ? 'หยุด' : 'เริ่ม'}</button>
+                    <center><button className='btn' onClick={() => setScanning(!scanning) }>{scanning ? 'หยุด' : 'เริ่ม'}</button></center>
                     <div ref={scannerRef} className="w-auto min-h-[75vh]  md:min-h-[50vh]">
                         {scannerRef.current && <canvas className="drawingBuffer absolute" width={scannerRef.current.offsetWidth} height={scannerRef.current.offsetHeight}></canvas>}
                         {scanning ? <Scanner scannerRef={scannerRef} cameraId={cameraId} onDetected={(result) => setResults(result)}  constraints={{width: scannerRef.current.offsetWidth, height: scannerRef.current.offsetHeight}}/> : null}

@@ -15,7 +15,7 @@ const ThemeChange=()=>{
                 <div tabIndex={0} className="dropdown-content z-10 menu p-2 shadow bg-base-100 rounded-box w-80 flex-row flex-wrap gap-5 justify-center">
                     <button data-set-theme="dark" className='btn btn-ghost'><FontAwesomeIcon icon={faCircle} className='text-black'/> DARK</button>
                     <button data-set-theme="light" className='btn btn-ghost'><FontAwesomeIcon icon={faCircle} className='text-white'/> LIGHT</button>
-                    <button data-set-theme="valentine" className='btn btn-ghost'><FontAwesomeIcon icon={faCircle} className='text-pink-400'/> PINK</button>
+                    <button data-set-theme="cupcake" className='btn btn-ghost'><FontAwesomeIcon icon={faCircle} className='text-pink-400'/> PINK</button>
                     <button data-set-theme="aqua" className='btn btn-ghost'><FontAwesomeIcon icon={faCircle} className='text-blue-400'/> AQUA</button>
                 </div>
         </div>

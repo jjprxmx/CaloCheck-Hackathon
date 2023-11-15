@@ -1,14 +1,19 @@
 const { Sequelize } = require("sequelize");
-
+const dotenv = require('dotenv');
+dotenv.config();
 const sequelize = new Sequelize(
-  "calocheck", // Database name
-  "premesocute", // Username
-  "nodeproject9999", // Password
+  process.env.DB_NAME, // Database name
+  process.env.DB_USERNAME, // Username
+  process.env.DB_PASSWORD, // Password
   {
-    host: "61.7.143.204", // Connect to your local database otherwise use 61.7.143.204
+    host: process.env.DB_HOST, // Connect to your local database otherwise use 61.7.143.204
     dialect: "mysql", // Tell sequelize to use Postgres
-  }
+    timezone: "Asia/Bangkok",
+  },
+ 
 );
+
+
 async function connect() {
   try {
     await sequelize.authenticate();
@@ -27,39 +32,9 @@ async function sync() {
   }
 }
 
-async function relation() {
-  try {
-    const db = {};
-    db.Sequelize = Sequelize;
-    db.sequelize = sequelize;
-    db.User = sequelize.import("./model/users");
-    db.foodnutrition = sequelize.import("../model/foodnutrition");
-    db.Usershistory = sequelize.import("../model/Usershistory");
-    db.UsersNutrition = sequelize.import("../model/UsersNutrition");
-    db.Usershistory.hasMany(
-      db.User,
-      {
-        foreignKey: { name: "userlineid", fild: "userlineId" },
-      },
-      db.foodnutrition,
-      {
-        foreignKey: { name: "idfood", fild: "idfood" },
-      }
-    );
-    db.Usershistory.belongsTo(db.User, { foreignKey: "userlineid" });
-    db.Usershistory.belongsTo(db.foodnutrition, { foreignKey: "idfood" });
-
-    db.UsersNutrition.hasMany(db.User, {
-      foreignKey: { name: "userlineid", fild: "userlineid" },
-    });
-    db.UsersNutrition.belongsTo(db.User, { foreignKey: "userlineid", targetKey: 'userlineid',});
-  } catch (error) {
-    console.log("error from database");
-  }
-}
-
 module.exports = {
   sequelize,
   connect,
   sync,
+
 };
